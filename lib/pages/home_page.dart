@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/home_controller.dart';
-import '../widgets/okul_list_item.dart'; // Controller sınıfı
-import 'raporlar_page.dart'; // Raporlar sayfası
+import '../widgets/okul_list_item.dart';
+import 'raporlar_page.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -11,10 +11,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final HomeController controller = Get.put(HomeController());
-  int _selectedIndex = 0; // Hangi menünün seçili olduğunu tutan index
+  int _selectedIndex = 0;
+
   final List<Widget> _pages = [
-    HomeContent(), // Ana sayfa içeriği
-    RaporlarPage(), // Raporlar sayfası
+    HomeContent(),
+    RaporlarPage(),
   ];
 
   void _onItemTapped(int index) {
@@ -27,32 +28,62 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Alba Kitap Okul Listesi'),
+        title: Text(
+          'Alba Kitap Okul Listesi',
+          style: TextStyle(color: Colors.white),
+        ),
+        centerTitle: true,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.blueAccent, Colors.lightBlueAccent],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
       ),
-      body: _pages[_selectedIndex], // Seçilen sayfa
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.school),
-            label: 'Okullar',
+      body: _pages[_selectedIndex],
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.blueAccent, Colors.lightBlueAccent],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.report),
-            label: 'Raporlar',
-          ),
-        ],
-        currentIndex: _selectedIndex, // Seçilen menü
-        selectedItemColor: Colors.blueAccent, // Seçili öğe rengi
-        unselectedItemColor: Colors.grey, // Seçilmeyen öğe rengi
-        backgroundColor: Colors.white, // Arka plan rengi
-        onTap: _onItemTapped, // Menüye tıklandığında ne olacağı
-        type: BottomNavigationBarType.fixed, // Sabit menü tipi
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 10,
+              offset: Offset(0, -2),
+            ),
+          ],
+        ),
+        child: BottomNavigationBar(
+          items: <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.school, size: 28),
+              label: 'Okullar',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.report, size: 28),
+              label: 'Raporlar',
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          selectedItemColor: Colors.white,
+          unselectedItemColor: Colors.white.withOpacity(0.6),
+          backgroundColor: Colors.transparent,
+          onTap: _onItemTapped,
+          type: BottomNavigationBarType.fixed,
+          elevation: 0,
+        ),
       ),
     );
   }
 }
 
-// Ana içerik kısmını ayrı bir widget olarak ayırdım
 class HomeContent extends StatelessWidget {
   final HomeController controller = Get.put(HomeController());
 
@@ -61,9 +92,10 @@ class HomeContent extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // İlçe Seçimi Dropdown
-          Obx(() => DropdownButton<String>(
+          Obx(() => DropdownButtonFormField<String>(
                 value: controller.selectedIlce.value.isEmpty
                     ? null
                     : controller.selectedIlce.value,
@@ -78,6 +110,13 @@ class HomeContent extends StatelessWidget {
                   controller.selectedIlce.value = value!;
                   controller.fetchOkullar(value);
                 },
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  prefixIcon: Icon(Icons.location_city),
+                  labelText: 'İlçe Seçiniz',
+                ),
               )),
           SizedBox(height: 16),
 
@@ -86,15 +125,17 @@ class HomeContent extends StatelessWidget {
             controller: controller.searchController,
             onChanged: (query) {
               if (query.isNotEmpty) {
-                controller.searchSchools(query); // API'den arama yap
+                controller.searchSchools(query);
               } else {
-                controller.resetSearch(); // Arama kutusu boşsa listeyi sıfırla
+                controller.resetSearch();
               }
             },
             decoration: InputDecoration(
               labelText: 'Okul Arayın',
               prefixIcon: Icon(Icons.search),
-              border: OutlineInputBorder(),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
           ),
           SizedBox(height: 16),

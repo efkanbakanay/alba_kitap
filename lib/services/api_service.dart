@@ -87,4 +87,21 @@ class ApiService {
       return null;
     }
   }
+
+  Future<Map<String, dynamic>?> updateSale(Sales entry, int saleId) async {
+  final response = await http.put(
+    Uri.parse('$baseUrl/update_sale/${saleId}'), // Belirli bir satış için ID kullanarak güncelleme yapılıyor
+    headers: headers,
+    body: json.encode(entry.toJson()),
+  );
+
+  if (response.statusCode == 200) {
+    // Başarılı ise response'u geri döndür
+    return json.decode(response.body);
+  } else {
+    // Hata durumunda null dön
+    print('Veri güncellenemedi: ${response.body}');
+    return null;
+  }
+}
 }

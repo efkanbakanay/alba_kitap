@@ -1,4 +1,5 @@
 class Sales {
+  final int? id;  // id opsiyonel hale getirildi
   final int schoolId;
   final String contactPerson;
   final String phone;
@@ -13,6 +14,7 @@ class Sales {
   final String notes;
 
   Sales({
+    this.id,  // id opsiyonel
     required this.schoolId,
     required this.contactPerson,
     required this.phone,
@@ -23,12 +25,13 @@ class Sales {
     this.discountPercentage,
     required this.desiredAuthor,
     required this.eventDate,
-    this.totalPrice, // required kaldırıldı
+    this.totalPrice,
     required this.notes,
   });
 
   factory Sales.fromJson(Map<String, dynamic> json) {
     return Sales(
+      id: json['id'],  // Eğer json'da id yoksa null olabilir
       schoolId: json['school_id'],
       contactPerson: json['contact_person'],
       phone: json['phone'],
@@ -44,30 +47,35 @@ class Sales {
     );
   }
 
-Map<String, dynamic> toJson() {
-  final Map<String, dynamic> data = {
-    'school_id': schoolId,
-    'contact_person': contactPerson,
-    'phone': phone,
-    'sold_book': soldBook,
-    'quantity': quantity,
-    'price': price,
-    'returns': returns,
-    'discount_percentage': discountPercentage,
-    'desired_author': desiredAuthor,
-    'event_date': eventDate,
-    'notes': notes,
-  };
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {
+      'school_id': schoolId,
+      'contact_person': contactPerson,
+      'phone': phone,
+      'sold_book': soldBook,
+      'quantity': quantity,
+      'price': price,
+      'returns': returns,
+      'discount_percentage': discountPercentage,
+      'desired_author': desiredAuthor,
+      'event_date': eventDate,
+      'notes': notes,
+    };
 
-  // Eğer total_price null değilse JSON'a ekliyoruz
-  if (totalPrice != null) {
-    data['total_price'] = totalPrice;
+    // Eğer id null değilse JSON'a ekliyoruz
+    if (id != null) {
+      data['id'] = id;
+    }
+
+    if (totalPrice != null) {
+      data['total_price'] = totalPrice;
+    }
+
+    return data;
   }
-  return data;
-}
 
   @override
   String toString() {
-    return 'Sales(schoolId: $schoolId, contactPerson: $contactPerson, phone: $phone, soldBook: $soldBook, quantity: $quantity, price: $price, returns: $returns, discountPercentage: $discountPercentage, desiredAuthor: $desiredAuthor, eventDate: $eventDate, totalPrice: $totalPrice, notes: $notes)';
+    return 'Sales(id: $id, schoolId: $schoolId, contactPerson: $contactPerson, phone: $phone, soldBook: $soldBook, quantity: $quantity, price: $price, returns: $returns, discountPercentage: $discountPercentage, desiredAuthor: $desiredAuthor, eventDate: $eventDate, totalPrice: $totalPrice, notes: $notes)';
   }
 }
